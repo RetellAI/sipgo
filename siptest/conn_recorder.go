@@ -4,7 +4,7 @@ import (
 	"net"
 	"sync/atomic"
 
-	"github.com/emiago/sipgo/sip"
+	"github.com/RetellAI/sipgo/sip"
 )
 
 type connRecorder struct {

@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/emiago/sipgo/fakes"
-	"github.com/emiago/sipgo/sip"
+	"github.com/RetellAI/sipgo/fakes"
+	"github.com/RetellAI/sipgo/sip"
 
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
