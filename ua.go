@@ -4,7 +4,7 @@ import (
 	"crypto/tls"
 	"net"
 
-	"github.com/emiago/sipgo/sip"
+	"github.com/RetellAI/sipgo/sip"
 )
 
 type UserAgent struct {

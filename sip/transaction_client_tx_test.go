@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/emiago/sipgo/fakes"
+	"github.com/RetellAI/sipgo/fakes"
 	"github.com/stretchr/testify/require"
 )
 
