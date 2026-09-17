@@ -4,7 +4,7 @@ import (
 	"net"
 	"testing"
 
-	"github.com/RetellAI/sipgo/fakes"
+	"github.com/emiago/sipgo/fakes"
 )
 
 func TestConnectionPool(t *testing.T) {

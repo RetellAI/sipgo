@@ -3,7 +3,7 @@ package siptest
 import (
 	"log/slog"
 
-	"github.com/RetellAI/sipgo/sip"
+	"github.com/emiago/sipgo/sip"
 )
 
 // ServerTxRecorder wraps server transactions

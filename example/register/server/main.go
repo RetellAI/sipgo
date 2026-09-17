@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/RetellAI/sipgo"
-	"github.com/RetellAI/sipgo/sip"
+	"github.com/emiago/sipgo"
+	"github.com/emiago/sipgo/sip"
 
 	"net/http"
 	_ "net/http/pprof"

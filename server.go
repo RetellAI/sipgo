@@ -9,7 +9,7 @@ import (
 	"net"
 	"strings"
 
-	"github.com/RetellAI/sipgo/sip"
+	"github.com/emiago/sipgo/sip"
 )
 
 var (

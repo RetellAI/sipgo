@@ -4,7 +4,7 @@ import (
 	"context"
 	"log/slog"
 
-	"github.com/RetellAI/sipgo/sip"
+	"github.com/emiago/sipgo/sip"
 )
 
 type ClientTxRequester struct {

@@ -13,8 +13,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/RetellAI/sipgo/fakes"
-	"github.com/RetellAI/sipgo/sip"
+	"github.com/emiago/sipgo/fakes"
+	"github.com/emiago/sipgo/sip"
 )
 
 func testCreateMessage(t testing.TB, rawMsg []string) sip.Message {
