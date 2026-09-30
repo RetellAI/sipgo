@@ -395,14 +395,22 @@ func (s *DialogClientSession) Ack(ctx context.Context) error {
 }
 
 func (s *DialogClientSession) WriteAck(ctx context.Context, ack *sip.Request) error {
+	// https://datatracker.ietf.org/doc/html/rfc3261#section-13.2.2.4
+	//
+	// Once the ACK has been constructed, the procedures of [4] are used to
+	// determine the destination address, port and transport.  However, the
+	// request is passed to the transport layer directly for transmission,
+	// rather than a client transaction.  This is because the UAC core
+	// handles retransmissions of the ACK, not the transaction layer.
 	s.buildReq(ack)
 	if err := s.requestValidate(s.UA.Client, ack); err != nil {
 		return err
 	}
-	// Clone only after routing is built: Clone pins the current destination.
-	// Retry independent copies without rebuilding dialog headers (RFC 3261 13.2.2.4).
+	// Snapshot the fully routed ACK once; Clone pins the current destination.
+	// Replay fresh copies without rebuilding dialog headers to avoid races and header accumulation.
 	ackTemplate := ack.Clone()
 	s.inviteTx.OnRetransmission(func(r *sip.Response) {
+		// Detect retransmission
 		if r.StatusCode != 200 {
 			return
 		}
@@ -413,6 +421,8 @@ func (s *DialogClientSession) WriteAck(ctx context.Context, ack *sip.Request) er
 	})
 
 	if err := s.UA.Client.WriteRequest(ack, s.requestValidate); err != nil {
+		// Make sure we close our error
+		// s.Close()
 		return err
 	}
 	s.setState(sip.DialogStateConfirmed)
