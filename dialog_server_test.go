@@ -218,3 +218,38 @@ func TestDialogServer2xxRetransmission(t *testing.T) {
 	resps := tx.Result()
 	require.Len(t, resps, 2)
 }
+
+func TestDialogServerAckAfterReInvite(t *testing.T) {
+	ua, _ := NewUA()
+	defer ua.Close()
+	cli, _ := NewClient(ua)
+
+	uasContact := sip.ContactHeader{
+		Address: sip.Uri{User: "test", Host: "127.0.0.200", Port: 5099},
+	}
+	dialogSrv := NewDialogServerCache(cli, uasContact)
+
+	invite, _, _ := createTestInvite(t, "sip:uas@127.0.0.1", "udp", "127.0.0.1:5090")
+	invite.AppendHeader(&sip.ContactHeader{Address: sip.Uri{Host: "uas", Port: 1234}})
+	tx := siptest.NewServerTxRecorder(invite)
+
+	d, err := dialogSrv.ReadInvite(invite, tx)
+	require.NoError(t, err)
+	defer d.Close()
+
+	res200 := sip.NewResponseFromRequest(d.InviteRequest, 200, "OK", nil)
+	ack := newAckRequestUAC(d.InviteRequest, res200, nil)
+
+	// A re-INVITE processed before the initial ACK advances the remote CSeq.
+	reinvite := sip.NewRequest(sip.INVITE, invite.Recipient)
+	reinvite.AppendHeader(&sip.CSeqHeader{SeqNo: invite.CSeq().SeqNo + 1, MethodName: sip.INVITE})
+	require.NoError(t, d.ReadRequest(reinvite, tx))
+
+	// The ACK for the initial 2xx still carries the INVITE's CSeq and must confirm the dialog.
+	require.NoError(t, d.ReadAck(ack, tx))
+	require.Equal(t, sip.DialogStateConfirmed, d.LoadState())
+
+	stale := newAckRequestUAC(d.InviteRequest, res200, nil)
+	stale.CSeq().SeqNo += 10
+	require.ErrorIs(t, d.ReadAck(stale, tx), ErrDialogInvalidCseq)
+}
